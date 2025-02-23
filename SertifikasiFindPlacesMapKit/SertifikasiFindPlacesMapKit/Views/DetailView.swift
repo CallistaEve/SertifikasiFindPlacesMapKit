@@ -4,6 +4,7 @@ import MapKit
 struct DetailView: View {
     let place: Place
     @State private var region: MKCoordinateRegion
+    @EnvironmentObject var favoritesManager: FavoritesManager
 
     init(place: Place) {
         self.place = place
@@ -16,9 +17,24 @@ struct DetailView: View {
     var body: some View {
         Form {
             Section(header: Text("Place Information")) {
-                Text(place.name)
-                    .font(.title2)
-                    .bold()
+                HStack {
+                    Text(place.name)
+                        .font(.title2)
+                        .bold()
+                    
+                    Spacer()
+                    
+                    Button(action: {
+                        if favoritesManager.isFavorite(place) {
+                            favoritesManager.removeFavorite(place)
+                        } else {
+                            favoritesManager.addFavorite(place)
+                        }
+                    }) {
+                        Image(systemName: favoritesManager.isFavorite(place) ? "heart.fill" : "heart")
+                            .foregroundColor(favoritesManager.isFavorite(place) ? .red : .gray)
+                    }
+                }
                 
                 Text("📍 \(place.address)")
                 

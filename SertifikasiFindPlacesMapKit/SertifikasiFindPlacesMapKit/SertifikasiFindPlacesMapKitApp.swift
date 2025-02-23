@@ -9,9 +9,11 @@ import SwiftUI
 
 @main
 struct SertifikasiFindPlacesMapKitApp: App {
+    @StateObject private var favoritesManager = FavoritesManager()
+
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            TabBarView()
         }
     }
 }
