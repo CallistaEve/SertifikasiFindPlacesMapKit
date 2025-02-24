@@ -10,7 +10,7 @@ class LocationSearchViewModel: NSObject, ObservableObject, CLLocationManagerDele
     )
     
     private var locationManager = CLLocationManager()
-    private var hasSetRegion = false // Prevents overriding user movement
+    private var hasSetRegion = false 
     
     override init() {
         super.init()
