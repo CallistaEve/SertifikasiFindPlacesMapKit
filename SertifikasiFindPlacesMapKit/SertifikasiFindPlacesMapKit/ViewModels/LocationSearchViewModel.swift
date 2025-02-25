@@ -24,7 +24,7 @@ class LocationSearchViewModel: NSObject, ObservableObject, CLLocationManagerDele
         guard let location = locations.first else { return }
 
         if let lastLocation = lastLocation, location.distance(from: lastLocation) < 500 {
-            return // Only update if moved at least 500 meters
+            return 
         }
 
         DispatchQueue.main.async {
