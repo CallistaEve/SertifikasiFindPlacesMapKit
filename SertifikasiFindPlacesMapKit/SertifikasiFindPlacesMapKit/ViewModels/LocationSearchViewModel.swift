@@ -10,7 +10,7 @@ class LocationSearchViewModel: NSObject, ObservableObject, CLLocationManagerDele
     )
     
     private var locationManager = CLLocationManager()
-    private var hasSetRegion = false 
+    private var lastLocation: CLLocation?
     
     override init() {
         super.init()
@@ -19,19 +19,24 @@ class LocationSearchViewModel: NSObject, ObservableObject, CLLocationManagerDele
         locationManager.startUpdatingLocation()
     }
     
+
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         guard let location = locations.first else { return }
-        
-        DispatchQueue.main.async {
-            if !self.hasSetRegion { // Only set the region once
-                self.region = MKCoordinateRegion(
-                    center: location.coordinate,
-                    span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
-                )
-                self.hasSetRegion = true
-            }
+
+        if let lastLocation = lastLocation, location.distance(from: lastLocation) < 500 {
+            return // Only update if moved at least 500 meters
         }
+
+        DispatchQueue.main.async {
+            self.region = MKCoordinateRegion(
+                center: location.coordinate,
+                span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
+            )
+        }
+
+        self.lastLocation = location
     }
+
 
     func searchPlaces() {
         if let cachedResults = SearchCache.shared.getResults(for: searchQuery) {
